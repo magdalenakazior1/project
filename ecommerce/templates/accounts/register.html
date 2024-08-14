@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" id="username" placeholder="Username">
+        <input type="email" name="email" id="email" placeholder="Email">
+        <input type="password" name="password" id="password" placeholder="Password">
+        <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password">
+        <input type="tel" name="phone_field" id="phone_field" placeholder="Phone Number" pattern="[0-9]{9}" required>
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
