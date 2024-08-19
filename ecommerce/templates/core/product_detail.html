@@ -1,0 +1,19 @@
+<!-- store/templates/store/product/product_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <header>
+        <h1>{{ product.name }}</h1>
+    </header>
+    <main>
+        <img src="{% static 'core/images/' %}{{ product.image }}" alt="{{ product.name }}">
+        <p>${{ product.price }}</p>
+        <p>{{ product.description }}</p>
+    </main>
+</body>
+</html>

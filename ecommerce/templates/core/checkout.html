@@ -1,0 +1,46 @@
+<!-- store/templates/store/checkout.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - From Gamers 4 Gamers</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Checkout</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'core:index' %}">Home</a></li>
+                <li><a href="{% url 'core:product_list' %}">Products</a></li>
+                <li><a href="{% url 'core:cart_detail' %}">Cart</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <form method="post">
+            {% csrf_token %}
+            <section class="cart-items">
+                {% for item in cart_items %}
+                <div class="cart-item">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                    <h2>{{ item.product.name }}</h2>
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <p>Price: ${{ item.product.price }}</p>
+                    <p>Total: ${{ item.product.price|floatformat:2 }}</p>
+                </div>
+                {% endfor %}
+                <div class="cart-total">
+                    <h2>Total Price: ${{ total_price|floatformat:2 }}</h2>
+                </div>
+            </section>
+            <button type="submit">Place Order</button>
+        </form>
+    </main>
+    <footer>
+        <p>&copy; Magdalena and Jakub project 2024 SDA. All rights reserved.</p>
+    </footer>
+</body>
+</html>

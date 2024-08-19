@@ -1,0 +1,16 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+<h2>Shopping Cart</h2>
+{% if order %}
+    <ul>
+        {% for item in order.items.all %}
+            <li>{{ item.product.name }} - {{ item.quantity }} x ${{ item.price }}</li>
+        {% endfor %}
+    </ul>
+    <p>Total: ${{ order.get_total_cost }}</p>
+    <a href="{% url 'store:checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
+{% endblock %}

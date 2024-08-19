@@ -1,0 +1,65 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <main class="container my-5">
+        <h1 class="text-center my-4">Our Products</h1>
+
+        <form method="get" class="mb-4">
+            <div class="form-group">
+                <label for="category">Select Category</label>
+                <select name="category" id="category" class="form-control" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                    <img src="{% static 'images/default_image.jpg' %}" class="card-img-top" alt="Default Image">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                        <p class="card-text font-weight-bold">${{ product.price }}</p>
+                        <div class="mt-auto">
+                            <form action="{% url 'core:add_to_cart' product.id %}" method="get">
+                                <div class="input-group mb-3">
+                                    <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ product.stock }}" placeholder="Quantity">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="submit">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <a href="{% url 'core:checkout' %}?product_id={{ product.id }}" class="btn btn-primary btn-block">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center">No products available.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>
+{% endblock %}

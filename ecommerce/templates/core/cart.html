@@ -1,0 +1,133 @@
+<!-- store/templates/store/cart.html -->
+{% extends 'core/index.html' %}
+
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+<h1 class="my-4">Shopping Cart</h1>
+
+{% if cart and cart.items.exists %}
+    <form method="post" action="{% url 'core:place_order' %}">
+        {% csrf_token %}
+
+        <section class="cart-items">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-items">
+                    {% for item in cart.items.all %}
+                    <tr data-item-id="{{ item.id }}">
+                        <td>{{ item.product.name }}</td>
+                        <td class="item-price">${{ item.price }}</td>
+                        <td>
+                            <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" class="form-control d-inline-block w-25 quantity-input" data-item-id="{{ item.id }}">
+                        </td>
+                        <td class="item-total">${{ item.get_cost|floatformat:2 }}</td>
+                        <td>
+                            <form method="post" class="delete-form" action="{% url 'core:delete_from_cart' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h3>Total: $<span id="cart-total">{{ cart.get_total_cost|floatformat:2 }}</span></h3>
+        </section>
+
+        <section class="shipping-details">
+            <h2>Shipping Details</h2>
+            <p>
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" value="{{ profile.address }}" required>
+            </p>
+            <p>
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" value="{{ profile.city }}" required>
+            </p>
+            <p>
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" value="{{ profile.state }}" required>
+            </p>
+            <p>
+                <label for="zipcode">Zipcode:</label>
+                <input type="text" id="zipcode" name="zipcode" value="{{ profile.zipcode }}" required>
+            </p>
+            <p>
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" value="{{ profile.country }}" required>
+            </p>
+            <p>
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" value="{{ profile.phone_number }}" required>
+            </p>
+            <button type="button" onclick="useProfileData()">Use Profile Data</button>
+        </section>
+
+        <section class="payment-methods">
+            <h2>Payment Method</h2>
+            <p>
+                <label><input type="radio" name="payment_method" value="credit_card" required> Credit Card</label>
+            </p>
+            <p>
+                <label><input type="radio" name="payment_method" value="paypal"> PayPal</label>
+            </p>
+            <p>
+                <label><input type="radio" name="payment_method" value="bank_transfer"> Bank Transfer</label>
+            </p>
+        </section>
+
+        <section class="delivery-options">
+            <h2>Select Delivery Day</h2>
+            <p>
+                <label for="delivery_date">Delivery Date:</label>
+                <input type="date" id="delivery_date" name="delivery_date" required>
+            </p>
+        </section>
+
+        <button type="submit" class="btn btn-success">Place Order</button>
+    </form>
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
+
+<script>
+    function useProfileData() {
+        document.getElementById('address').value = "{{ profile.address }}";
+        document.getElementById('city').value = "{{ profile.city }}";
+        document.getElementById('state').value = "{{ profile.state }}";
+        document.getElementById('zipcode').value = "{{ profile.zipcode }}";
+        document.getElementById('country').value = "{{ profile.country }}";
+        document.getElementById('phone').value = "{{ profile.phone_number }}";
+    }
+
+    document.querySelectorAll('.quantity-input').forEach(function(input) {
+        input.addEventListener('change', function() {
+            const itemId = this.dataset['itemId'];
+            const quantity = this.value;
+            const price = parseFloat(document.querySelector(`tr[data-item-id="${itemId}"] .item-price`).textContent.replace('$', ''));
+
+            // Update the item's total
+            const itemTotalElement = document.querySelector(`tr[data-item-id="${itemId}"] .item-total`);
+            const total = (quantity * price).toFixed(2);
+            itemTotalElement.textContent = `$${total}`;
+
+            // Update the overall cart total
+            let cartTotal = 0;
+            document.querySelectorAll('.item-total').forEach(function(itemTotalElement) {
+                cartTotal += parseFloat(itemTotalElement.textContent.replace('$', ''));
+            });
+            document.getElementById('cart-total').textContent = cartTotal.toFixed(2);
+        });
+    });
+</script>
+
+{% endblock %}

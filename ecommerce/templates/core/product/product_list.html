@@ -1,0 +1,39 @@
+<!-- store/templates/store/product_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'store/styles.css' %}">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>Our Products</h1>
+            <nav>
+                <ul class="nav-tabs">
+                    <li><a href="{% url 'store:home' %}">Home</a></li>
+                    <li><a href="{% url 'store:product_list' %}">Products</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="product-list">
+            <ul>
+                {% for product in products %}
+                    <li>
+                        <h2>{{ product.name }}</h2>
+                        <p>{{ product.description }}</p>
+                        <p>${{ product.price }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; Magdalena and Jakub project 2024 SDA. All rights reserved.</p>
+    </footer>
+</body>
+</html>
