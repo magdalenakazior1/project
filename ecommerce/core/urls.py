@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from core import views
 from .views import CustomLogoutView
 from django.contrib.auth.views import (
     PasswordChangeView, PasswordChangeDoneView,
@@ -12,7 +12,7 @@ app_name = 'core'  # Ensure 'store' is the correct namespace
 urlpatterns = [
     path('', views.index, name='index'),
     path('products/', views.product_list, name='product_list'),
-    path('cart/', views.view_cart, name='view_cart'),
+    path('cart/', views.cart, name='cart'),
     path('profile/', views.profile, name='profile'),
     path('admin/', views.admin_panel, name='admin_panel'),
     path('add_to_cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),

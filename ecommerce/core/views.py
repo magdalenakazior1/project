@@ -43,13 +43,13 @@ def add_to_cart(request, product_id):
         cart_item.save()
 
     messages.success(request, f'{product.name} was added to your cart.')
-    return redirect('core:view_cart')  # Updated to include 'store:' for namespacing
+    return redirect('core:cart')  # Updated to include 'store:' for namespacing
 
 # View cart
 @login_required
-def view_cart(request):
+def cart(request):
     cart = Cart.objects.filter(user=request.user).first()
-    return render(request, 'core/cart.html', {'cart': cart})
+    return render(request, 'cart.html', {'cart': cart})
 
 # Update cart item quantity
 @login_required
